@@ -2,7 +2,13 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
     return {
         name: "极略篇",
 		content: function (config, pack) {
-
+			for (var name in pack.character.character) {
+				if (!pack.character.character[name][4])
+					pack.character.character[name][4] = [];
+				pack.character.character[name][4].push('forbidai');
+				pack.character.character[name][4].push('ext:极略篇/image/character/' + name + '.jpg');
+				pack.character.character[name][4].push('die:ext:极略篇/audio/die/' + name + '.mp3');
+			}
         },
 		precontent: function () {
 
@@ -12,10 +18,10 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 		package: {
             character: {
                 character: {
-                    "ultimate_guanyu": ["male", "shen", "3/4/2", ["ultimate_wusheng", "lianpo", "sbshipo"], ["forbidai", "die:ext:极武将/audio/die/ultimate_guanyu.mp3"]],
-                    "ultimate_wolong": ["male", "shu", "3/3/1", ["ultimate_huoji", "ultimate_kanpo", "bazhen"], ["forbidai", "die:ext:极武将/audio/die/ultimate_wolong.mp3"]],
-                    "ultimate_daxiaoqiao": ["female", "wu", "4/4", ["sbtianxiang", "xinhongyan", "sbguose", "sbliuli"], ["forbidai", "die:ext:极武将/audio/die/ultimate_daxiaoqiao.mp3"]],
-                    "ultimate_zhangfei": ["male", "shu", "3/4/1", ["ultimate_paoxiao", "sbxieji", "sbbenxi"], ["forbidai", "die:ext:极武将/audio/die/ultimate_zhangfei.mp3"]],
+                    "ultimate_guanyu": ["male", "shen", "3/4/2", ["ultimate_wusheng", "lianpo", "sbshipo"]],
+                    "ultimate_wolong": ["male", "shu", "3/3/1", ["ultimate_huoji", "ultimate_kanpo", "bazhen"]],
+                    "ultimate_daxiaoqiao": ["female", "wu", "4/4", ["sbtianxiang", "xinhongyan", "sbguose", "sbliuli"]],
+                    "ultimate_zhangfei": ["male", "shu", "3/4/1", ["ultimate_paoxiao", "sbxieji", "sbbenxi"]],
                 },
 				translate:{
 					"ultimate_guanyu": "极关羽",
@@ -539,8 +545,8 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
             author: "jcShan709",
             diskURL: "https://github.com/jcshan709/ultimate-heroes",
             forumURL: "https://github.com/jcshan709/ultimate-heroes/issues",
-            version: "3.1",
+            version: "3.2",
         },
-		files: { "character": ["ultimate_wolong.jpg", "ultimate_daxiaoqiao.jpg", "ultimate_zhangfei.jpg", "ultimate_guanyu.jpg"], "card": [], "skill": [], "audio": [] }
+		files: { "character": [], "card": [], "skill": [], "audio": [] }
     }
 })
