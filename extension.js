@@ -18,16 +18,20 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 		package: {
             character: {
                 character: {
-                    "ultimate_guanyu": ["male", "shen", "3/4/2", ["ultimate_wusheng", "lianpo", "sbshipo"]],
+                    "ultimate_guanyu": ["male", "shen", "3/4/1", ["ultimate_wusheng", "lianpo", "sbshipo"]],
                     "ultimate_wolong": ["male", "shu", "3/3/1", ["ultimate_huoji", "ultimate_kanpo", "bazhen"]],
                     "ultimate_daxiaoqiao": ["female", "wu", "4/4", ["sbtianxiang", "xinhongyan", "sbguose", "sbliuli"]],
                     "ultimate_zhangfei": ["male", "shu", "3/4/1", ["ultimate_paoxiao", "sbxieji", "sbbenxi"]],
+					"ultimate_lvbu": ["male", "qun", "6/6/2", ["mashu", "sbtieji", "repojun", "wushuang", "new_liyu", "paoxiao"]],
+					"ultimate_xusheng": ["male", "wu", "3/4/1", ["ultimate_pojun"]]
                 },
 				translate:{
 					"ultimate_guanyu": "极关羽",
 					"ultimate_wolong": "极诸葛亮",
 					"ultimate_daxiaoqiao": "极大小乔",
 					"ultimate_zhangfei": "极张飞",
+					"ultimate_lvbu": "极吕布",
+					"ultimate_xusheng": "极徐盛"
 				},
             },
             card: {
@@ -529,6 +533,65 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
                             },
                         },
                     },
+					"ultimate_pojun":{
+						shaRelated:true,
+						audio:'repojun2',
+						trigger:{player:'useCardToPlayered'},
+						direct:true,
+						filter:function(event,player){
+							return event.card.name=='sha'&&event.target.hp>0&&event.target.countCards('he')>0;
+						},
+						content:function(){
+							'step 0'
+							var next=player.choosePlayerCard(trigger.target,'he',[1,Math.min(trigger.target.hp,trigger.target.countCards('he'))],get.prompt('ultimate_pojun',trigger.target));
+							next.set('ai',function(button){
+								if(!_status.event.goon) return 0;
+								var val=get.value(button.link);
+								if(button.link==_status.event.target.getEquip(2)) return 2*(val+3);
+								return val;
+							});
+							next.set('goon',get.attitude(player,trigger.target)<=0);
+							next.set('forceAuto',true);
+							'step 1'
+							if(result.bool){
+								var target=trigger.target;
+								player.logSkill('ultimate_pojun',target);
+								target.addSkill('repojun2');
+								target.addToExpansion('giveAuto',result.cards,target).gaintag.add('repojun2');
+							}
+						},
+						ai:{
+							unequip_ai:true,
+							directHit_ai:true,
+							skillTagFilter:function(player,tag,arg){
+								if(get.attitude(player,arg.target)>0) return false;
+								if(tag=='directHit_ai') return arg.target.hp>=Math.max(1,arg.target.countCards('h')-1);
+								if(arg&&arg.name=='sha'&&arg.target.getEquip(2)) return true;
+								return false;
+							}
+						},
+						group:'ultimate_pojun3',
+					},
+					"ultimate_pojun3":{
+						audio:'repojun',
+						trigger:{source:'damageBegin1'},
+						filter:function(event,player){
+							var target=event.player;
+							return event.card&&event.card.name=='sha'&&(player.countCards('h')>=target.countCards('h')||player.countCards('e')>=target.countCards('e')||(player.countCards('h')==0&&player.countCards('e')==0));
+						},
+						forced:true,
+						locked:false,
+						logTarget:'player',
+						content:function(event,player){
+							var target = trigger.player;
+							if (player.countCards('h')>=target.countCards('h'))
+								trigger.num++;
+							if (player.countCards('e')>=target.countCards('e'))
+								trigger.num++;
+							if (target.countCards('h')==0 && target.countCards('e')==0)
+								trigger.num++;
+						},
+					},
                 },
                 translate: {
                     ultimate_kanpo: "看破",
@@ -539,6 +602,9 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
                     ultimate_wusheng_info: "你可以将一张手牌当作任意【杀】使用或打出。出牌阶段开始时，你可以选择一名其他角色，本阶段对其使用【杀】无距离和次数限制，使用【杀】指定其为目标后摸一张牌，对其使用五张【杀】后不能对其使用【杀】。",
                     ultimate_paoxiao: "咆哮",
                     ultimate_paoxiao_info: "锁定技。①你使用【杀】无次数限制。②若你的装备区内有武器牌，则你使用【杀】无距离限制。③当你于出牌阶段内使用第二张及以后【杀】时，你获得如下效果：{此【杀】不可被响应且伤害值基数+1；此【杀】指定目标后，目标角色的非锁定技于本回合内失效。}",
+					ultimate_pojun: "破军",
+					ultimate_pojun3: "破军",
+					ultimate_pojun_info: "当你使用【杀】指定目标后，你可以将其的至多X张牌置于其武将牌上（X为其体力值），然后其于当前回合结束时获得这些牌。当你使用【杀】对一名角色造成伤害时，以下条件每满足一项，伤害+1：①该角色的手牌数不大于你；②该角色装备区内的牌数不大于你；③该角色没有手牌和装备。",
                 },
             },
             intro: "主要在谋攻篇的基础上进行调整，大部分为加强，以及一些角色技能的合理化（如丞相）",
