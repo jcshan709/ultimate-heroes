@@ -611,7 +611,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
             author: "jcShan709",
             diskURL: "https://github.com/jcshan709/ultimate-heroes",
             forumURL: "https://github.com/jcshan709/ultimate-heroes/issues",
-            version: "3.2",
+            version: "3.3",
         },
 		files: { "character": [], "card": [], "skill": [], "audio": [] }
     }
